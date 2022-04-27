@@ -34,7 +34,7 @@ defmodule Wordle do
       [:green, :green, :green, :green, :green]
 
   """
-  @spec score(binary, binary) :: [:green | :yellow | :grey]
+  @spec score(String.t, String.t) :: [:green | :yellow | :grey]
   def score(target, guess) do
     zip_graphemes(target, guess)
       |> score_greens
@@ -71,4 +71,70 @@ defmodule Wordle do
     end
   end
 
+end
+
+
+defmodule WordleGame do
+  @word_length 5
+  @winning_score List.duplicate(:green, @word_length)
+  @max_guesses 7
+  @dictionary ["ROBOT", "TRACE", "ROUTE"]
+
+  defstruct [:secret, guesses: 1]
+
+  def play(action \\ :new) do
+    case action do
+       :new -> play(new_game())
+       %{secret: secret, guesses: guesses} -> play(do_gameloop(secret, guesses))
+       :winner -> "You've won! Hurray!"
+       :game_over -> "GAME OVER"
+    end
+
+  end
+
+
+  def do_gameloop(_, guesses) when guesses > @max_guesses, do: :game_over
+  def do_gameloop(secret, guesses) do
+    guess = get_input(guesses)
+    score = Wordle.score(secret, guess)
+    case score do
+      @winning_score -> :winner
+      score ->
+        print_score(score)
+        %WordleGame{secret: secret, guesses: guesses + 1}
+    end
+  end
+
+  def print_score(score) do
+    ("     " <> for color <- score, into: "", do: to_str(color))
+      |> IO.puts()
+  end
+
+  def to_str(:green), do: "g"
+  def to_str(:yellow), do: "y"
+  def to_str(_), do: "_"
+
+
+  def new_game() do
+    %WordleGame{secret: "ROBOT"}
+  end
+
+  def get_input(guesses) do
+    IO.gets("#{guesses}/#{@max_guesses}: ")
+      |> String.trim
+      |> String.upcase
+      |> validate_guess
+      |> handle_error(guesses)
+  end
+
+  def handle_error(:invalid_input, guesses), do: get_input(guesses)
+  def handle_error(guess, _), do: guess
+
+  def validate_guess(guess) do
+    cond do
+      String.length(guess) != @word_length -> :invalid_input
+      guess not in @dictionary -> :invalid_input
+      true -> guess
+    end
+  end
 end

@@ -83,5 +83,13 @@ defmodule WordleTest do
     assert score == [:yellow, :grey, :grey, :grey, :green]
   end
 
+  test "unequal lengths" do
+    target = "BBBAA"
+    guess = "AZAZAAA"
+    score = Wordle.score(target, guess)
+
+    assert score == {:error, :unequal_length}
+  end
+
 
 end
