@@ -78,7 +78,7 @@ defmodule WordleGame do
   @word_length 5
   @winning_score List.duplicate(:green, @word_length)
   @max_guesses 7
-  @dictionary ["ROBOT", "TRACE", "ROUTE"]
+  @dictionary ["ROBOT", "TRACE", "ROUTE"]  # TODO: import the dictionary and filter all words of length 5
 
   defstruct [:secret, guesses: 1]
 
@@ -89,35 +89,38 @@ defmodule WordleGame do
        :winner -> "You've won! Hurray!"
        :game_over -> "GAME OVER"
     end
-
   end
 
+  def new_game() do
+    IO.puts("Welcom to Wordle! \nYou have #{@max_guesses} tries to find out the secret word... \nPlease entor your guess:")
+    %WordleGame{secret: "ROBOT"}
+  end
 
   def do_gameloop(_, guesses) when guesses > @max_guesses, do: :game_over
   def do_gameloop(secret, guesses) do
     guess = get_input(guesses)
     score = Wordle.score(secret, guess)
+    print_guess(guess)
+    print_score(score)
     case score do
       @winning_score -> :winner
-      score ->
-        print_score(score)
-        %WordleGame{secret: secret, guesses: guesses + 1}
+      _ -> %WordleGame{secret: secret, guesses: guesses + 1}
     end
   end
 
+  def print_guess(guess) do
+    ("     " <> for <<char <- guess>>, into: "", do: "#{<<char>>} ")
+      |> IO.puts
+  end
   def print_score(score) do
     ("     " <> for color <- score, into: "", do: to_str(color))
-      |> IO.puts()
+      |> IO.puts
   end
 
-  def to_str(:green), do: "g"
-  def to_str(:yellow), do: "y"
-  def to_str(_), do: "_"
+  def to_str(:green), do: "🟩"
+  def to_str(:yellow), do: "🟨"
+  def to_str(_), do: "⬛"
 
-
-  def new_game() do
-    %WordleGame{secret: "ROBOT"}
-  end
 
   def get_input(guesses) do
     IO.gets("#{guesses}/#{@max_guesses}: ")
