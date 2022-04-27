@@ -91,13 +91,13 @@ defmodule WordleGame do
     end
   end
 
-  def new_game() do
+  defp new_game() do
     IO.puts("Welcom to Wordle! \nYou have #{@max_guesses} tries to find out the secret word... \nPlease entor your guess:")
     %WordleGame{secret: "ROBOT"}
   end
 
-  def do_gameloop(_, guesses) when guesses > @max_guesses, do: :game_over
-  def do_gameloop(secret, guesses) do
+  defp do_gameloop(_, guesses) when guesses > @max_guesses, do: :game_over
+  defp do_gameloop(secret, guesses) do
     guess = get_input(guesses)
     score = Wordle.score(secret, guess)
     print_guess(guess)
@@ -108,21 +108,21 @@ defmodule WordleGame do
     end
   end
 
-  def print_guess(guess) do
+  defp print_guess(guess) do
     ("     " <> for <<char <- guess>>, into: "", do: "#{<<char>>} ")
       |> IO.puts
   end
-  def print_score(score) do
+  defp print_score(score) do
     ("     " <> for color <- score, into: "", do: to_str(color))
       |> IO.puts
   end
 
-  def to_str(:green), do: "🟩"
-  def to_str(:yellow), do: "🟨"
-  def to_str(_), do: "⬛"
+  defp to_str(:green), do: "🟩"
+  defp to_str(:yellow), do: "🟨"
+  defp to_str(_), do: "⬛"
 
 
-  def get_input(guesses) do
+  defp get_input(guesses) do
     IO.gets("#{guesses}/#{@max_guesses}: ")
       |> String.trim
       |> String.upcase
@@ -130,10 +130,10 @@ defmodule WordleGame do
       |> handle_error(guesses)
   end
 
-  def handle_error(:invalid_input, guesses), do: get_input(guesses)
-  def handle_error(guess, _), do: guess
+  defp handle_error(:invalid_input, guesses), do: get_input(guesses)
+  defp handle_error(guess, _), do: guess
 
-  def validate_guess(guess) do
+  defp validate_guess(guess) do
     cond do
       String.length(guess) != @word_length -> :invalid_input
       guess not in @dictionary -> :invalid_input
