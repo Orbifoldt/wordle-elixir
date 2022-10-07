@@ -1,7 +1,5 @@
 # Wordle
 
-[dictionary.txt](http://www.math.sjsu.edu/~foster/dictionary.txt)
-
 To start IEx and compile the code run:
 ```bash
 iex -S mix
@@ -20,6 +18,8 @@ To run the tests
 mix test
 ```
 
+## Limitations
+Currently the only guesses you can make are TRACE, ROUTE and ROBOT. TODO: add this [dictionary.txt](http://www.math.sjsu.edu/~foster/dictionary.txt)
 
 <!-- ## Installation
 
