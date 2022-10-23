@@ -92,7 +92,7 @@ defmodule WordleGame do
   end
 
   defp new_game() do
-    IO.puts("Welcom to Wordle! \nYou have #{@max_guesses} tries to find out the secret word... \nPlease entor your guess:")
+    IO.puts("Welcom to Wordle! \nYou have #{@max_guesses} tries to find out the secret word... \nPlease enter your guess:")
     %WordleGame{secret: "ROBOT"}
   end
 
